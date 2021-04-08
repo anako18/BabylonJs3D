@@ -32,7 +32,7 @@ function startGame() {
             }
         }
         if (inputStates.help) {
-            ausecours();
+            superpower();
         } else if (inputStates.rehide) {
             rehideTreasure();
             drawMenu(Constants.text1);
@@ -126,8 +126,8 @@ function createFreeCamera(scene) {
     return camera;
 }
 
-//Superpower, the character can fly now to find the tresure more easily
-function ausecours() {
+//Superpower, the character can fly over the walls to find the treasure easier
+function superpower() {
     let character = scene.getMeshByName(Constants.characterMeshName);
     character.position.y = 100;
     let treasure = scene.getMeshByName(Constants.treasureMeshName);
@@ -139,7 +139,7 @@ function ausecours() {
     //lights[1].direction = treasure.position;
     lights[1].setEnabled(true);
     //scene.activeCamera = cameras[1];
-    var timeleft = 10;
+    var timeleft = Constants.timeForSuperPower;
     const interval = setInterval(function () {
         drawMenu(Constants.text2 + timeleft.toString())
         if (timeleft <= 0) {
@@ -152,18 +152,18 @@ function ausecours() {
             clearInterval(interval);
         }
         timeleft -= 1;
-    }, 1000);
+    }, Constants.timeForSuperPower*100);
 }
 
 //Camera which will follow the main character
 function createFollowCamera(scene, target) {
     let camera = new BABYLON.FollowCamera("followCamera", target.position, scene, target);
 
-    camera.radius = 80;
-    camera.heightOffset = 120;
-    camera.rotationOffset = 0;
-    camera.cameraAcceleration = .1;
-    camera.maxCameraSpeed = 5;
+    camera.radius = Constants.cameraRadius;
+    camera.heightOffset = Constants.cameraHeightOffset;
+    camera.rotationOffset = Constants.cameraRotationOffset;
+    camera.cameraAcceleration = Constants.cameraAcceleration;
+    camera.maxCameraSpeed = Constants.cameraSpeed;
     return camera;
 }
 
@@ -231,6 +231,7 @@ function createCharacter(scene) {
         character.frontVector = new BABYLON.Vector3(0, 0, 1);
         character.scaling = new BABYLON.Vector3(Constants.charScale, Constants.charScale, Constants.charScale);
         character.checkCollisions = true;
+        //character.rotation.z = 90;
 
         character.move = () => {
             if (inputStates.up) {
@@ -249,7 +250,7 @@ function createCharacter(scene) {
                 character.frontVector = new BABYLON.Vector3(Math.sin(character.rotation.y), 0, Math.cos(character.rotation.y));
             }
         }
-        let a = scene.beginAnimation(result.skeletons[0], 0, 150, true, 1);
+        let a = scene.beginAnimation(result.skeletons[0], 0, 159, true, 1);
 
     }).then(() => {
         let character = scene.getMeshByName(Constants.characterMeshName);
